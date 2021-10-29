@@ -61,7 +61,7 @@ def which_bin(
     arr: np.ndarray,
     bin_edges: np.ndarray,
     time_before: Optional[float] = None,
-    nan_vals_before_first_bin: bool = False,
+    nan_vals_before_first_bin: bool = True,
     nan_vals_occuring_x_after_last_bin: Optional[float] = None,
 ) -> np.ndarray:
     """For each element of an input array, get the corresponding bin it would be binned into
@@ -70,7 +70,7 @@ def which_bin(
         arr (np.ndarray): Input array of timestamps
         bin_edges (np.ndarray): Array of bins
         time_before (Optional[float], optional): By default, values are binned into the closest preceding bin but if this value is specified, timestamps falling this value before a following bin are binned to that bin. Defaults to None.
-        nan_vals_before_first_bin (bool, optional): If True, returns np.nan for values of input timestamps occuring before the after the first bin. Defaults to False.
+        nan_vals_before_first_bin (bool, optional): If True, returns np.nan for values of input timestamps occuring before the after the first bin. Defaults to True.
         nan_vals_occuring_x_after_last_bin (Optional[float], optional): If specified, return np.nan for values occuring this latency after the final bin. Defaults to None.
 
     Returns:
@@ -96,7 +96,7 @@ def which_bin_idx(
     arr: np.ndarray,
     bin_edges: np.ndarray,
     time_before: Optional[float] = None,
-    nan_vals_before_first_bin: bool = False,
+    nan_vals_before_first_bin: bool = True,
     nan_vals_occuring_x_after_last_bin: Optional[float] = None,
 ) -> np.ndarray:
     """For each element of an input array, get the corresponding index of the bin it would be binned into
@@ -105,7 +105,7 @@ def which_bin_idx(
         arr (np.ndarray): Input array of timestamps
         bin_edges (np.ndarray): Array of bins
         time_before (Optional[float], optional): By default, values are binned into the closest preceding bin but if this value is specified, timestamps falling this value before a following bin are binned to that bin. Defaults to None.
-        nan_vals_before_first_bin (bool, optional): If True, returns np.nan for values of input timestamps occuring before the after the first bin. Defaults to False.
+        nan_vals_before_first_bin (bool, optional): If True, returns np.nan for values of input timestamps occuring before the after the first bin. Defaults to True.
         nan_vals_occuring_x_after_last_bin (Optional[float], optional): If specified, return np.nan for values occuring this latency after the final bin. Defaults to None.
 
     Returns:
