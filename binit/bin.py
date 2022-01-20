@@ -62,7 +62,7 @@ def which_bin(
     bin_edges: np.ndarray,
     time_before: Optional[float] = None,
     nan_vals_before_first_bin: bool = True,
-    nan_vals_occuring_x_after_last_bin: Optional[float] = None,
+    time_after: Optional[float] = None,
 ) -> np.ndarray:
     """For each element of an input array, get the corresponding bin it would be binned into
 
@@ -71,7 +71,7 @@ def which_bin(
         bin_edges (np.ndarray): Array of bins
         time_before (Optional[float], optional): By default, values are binned into the closest preceding bin but if this value is specified, timestamps falling this value before a following bin are binned to that bin. Defaults to None.
         nan_vals_before_first_bin (bool, optional): If True, returns np.nan for values of input timestamps occuring before the after the first bin. Defaults to True.
-        nan_vals_occuring_x_after_last_bin (Optional[float], optional): If specified, return np.nan for values occuring this latency after the final bin. Defaults to None.
+        time_after (Optional[float], optional): If specified, return np.nan for values occuring this latency after the event. Defaults to None.
 
     Returns:
         np.ndarray: Bin values
@@ -86,9 +86,9 @@ def which_bin(
     if nan_vals_before_first_bin:
         nan_mask = idx < 0
         bin_values[nan_mask] = np.nan
-    if nan_vals_occuring_x_after_last_bin is not None:
+    if time_after is not None:
         latency_to_max = arr - np.max(bin_edges)
-        bin_values[latency_to_max > nan_vals_occuring_x_after_last_bin] = np.nan
+        bin_values[latency_to_max > time_after] = np.nan
     return bin_values
 
 
@@ -97,7 +97,7 @@ def which_bin_idx(
     bin_edges: np.ndarray,
     time_before: Optional[float] = None,
     nan_vals_before_first_bin: bool = True,
-    nan_vals_occuring_x_after_last_bin: Optional[float] = None,
+    time_after: Optional[float] = None,
 ) -> np.ndarray:
     """For each element of an input array, get the corresponding index of the bin it would be binned into
 
@@ -106,7 +106,7 @@ def which_bin_idx(
         bin_edges (np.ndarray): Array of bins
         time_before (Optional[float], optional): By default, values are binned into the closest preceding bin but if this value is specified, timestamps falling this value before a following bin are binned to that bin. Defaults to None.
         nan_vals_before_first_bin (bool, optional): If True, returns np.nan for values of input timestamps occuring before the after the first bin. Defaults to True.
-        nan_vals_occuring_x_after_last_bin (Optional[float], optional): If specified, return np.nan for values occuring this latency after the final bin. Defaults to None.
+        time_after (Optional[float], optional): If specified, return np.nan for values occuring this latency after the event. Defaults to None.
 
     Returns:
         np.ndarray: Bin values
@@ -120,9 +120,9 @@ def which_bin_idx(
     if nan_vals_before_first_bin:
         nan_mask = idx < 0
         idx[nan_mask] = np.nan
-    if nan_vals_occuring_x_after_last_bin is not None:
+    if time_after is not None:
         latency_to_max = arr - np.max(bin_edges)
-        idx[latency_to_max > nan_vals_occuring_x_after_last_bin] = np.nan
+        idx[latency_to_max > time_after] = np.nan
     return idx
 
 
