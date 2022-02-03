@@ -81,7 +81,7 @@ def _align_to(
         to_align_to, np.ndarray
     ):
         raise TypeError(
-            "Both arrays must be numpy arrays. Got {} and {}".fotmat(
+            "Both arrays must be numpy arrays. Got {} and {}".format(
                 type(to_be_aligned), type(to_align_to)
             )
         )
