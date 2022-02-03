@@ -1,13 +1,13 @@
-
 import numpy as np
 from typing import Optional
+
 
 def align_around(
     to_be_aligned: np.ndarray,
     to_align_to: np.ndarray,
     t_before: Optional[float] = None,
     max_latency: Optional[float] = None,
-    drop: bool =False,
+    drop: bool = False,
 ) -> np.ndarray:
     """
     Align one array to another.
@@ -45,6 +45,7 @@ def align_around(
         latencies = latencies[np.logical_not(np.isnan(latencies))]
     return latencies
 
+
 def _align_to(
     to_be_aligned: np.ndarray, to_align_to: np.ndarray, no_beyond: bool = False
 ):
@@ -79,7 +80,11 @@ def _align_to(
     if not isinstance(to_be_aligned, np.ndarray) or not isinstance(
         to_align_to, np.ndarray
     ):
-        raise TypeError("Both arrays must be numpy arrays")
+        raise TypeError(
+            "Both arrays must be numpy arrays. Got {} and {}".fotmat(
+                type(to_be_aligned), type(to_align_to)
+            )
+        )
 
     if not len(to_align_to.shape) == 1 and not len(to_be_aligned.shape) == 1:
         raise ValueError("Must Pass in flat numpy arrays. Try your_array.flatten()")
@@ -104,7 +109,6 @@ def _negative_align(to_be_aligned, to_align_to, no_before=False):
     Returns:
         A numpy array of aligned data
     """
-
 
     _to_be_aligned_isiter = False
     _to_align_to_isiter = False
