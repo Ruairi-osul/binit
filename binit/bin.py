@@ -1,6 +1,7 @@
 from typing import Optional, Tuple, List
 import numpy as np
 from collections import OrderedDict
+from binit.align import align_around
 
 
 def binned_array_regular_interval(
@@ -60,9 +61,8 @@ def binarize_array(arr: np.ndarray) -> np.ndarray:
 def which_bin(
     arr: np.ndarray,
     bin_edges: np.ndarray,
-    time_before: Optional[float] = None,
-    nan_vals_before_first_bin: bool = True,
-    time_after: Optional[float] = None,
+    time_before: Optional[float] = 0,
+    time_after: Optional[float] = 1,
 ) -> np.ndarray:
     """For each element of an input array, get the corresponding bin it would be binned into
 
@@ -76,28 +76,25 @@ def which_bin(
     Returns:
         np.ndarray: Bin values
     """
-    if time_before is not None:
-        idx = np.digitize(arr, (bin_edges - time_before)) - 1
-    else:
-        idx = np.digitize(arr, bin_edges) - 1
+    idx = np.digitize(arr, (bin_edges - time_before), right=False) - 1
 
     idx_to_use = idx.tolist()
     bin_values = (bin_edges[idx_to_use]).astype(float)
-    if nan_vals_before_first_bin:
-        nan_mask = idx < 0
-        bin_values[nan_mask] = np.nan
-    if time_after is not None:
-        latency_to_max = arr - np.max(bin_edges)
-        bin_values[latency_to_max > time_after] = np.nan
-    return bin_values
+    bin_values[idx < 0] = np.nan
+    aligned = align_around(
+        to_be_aligned=arr,
+        to_align_to=bin_edges,
+        t_before=time_before,
+        max_latency=time_after,
+    )
+    return np.where(~np.isnan(aligned), bin_values, np.nan)
 
 
 def which_bin_idx(
     arr: np.ndarray,
     bin_edges: np.ndarray,
-    time_before: Optional[float] = None,
-    nan_vals_before_first_bin: bool = True,
-    time_after: Optional[float] = None,
+    time_before: Optional[float] = 0,
+    time_after: Optional[float] = 1,
 ) -> np.ndarray:
     """For each element of an input array, get the corresponding index of the bin it would be binned into
 
@@ -111,19 +108,15 @@ def which_bin_idx(
     Returns:
         np.ndarray: Bin values
     """
-    if time_before is not None:
-        idx = np.digitize(arr, (bin_edges - time_before)) - 1
-    else:
-        idx = np.digitize(arr, bin_edges) - 1
+    idx = np.digitize(arr, (bin_edges - time_before), right=False) - 1
 
-    idx = idx.astype(float)
-    if nan_vals_before_first_bin:
-        nan_mask = idx < 0
-        idx[nan_mask] = np.nan
-    if time_after is not None:
-        latency_to_max = arr - np.max(bin_edges)
-        idx[latency_to_max > time_after] = np.nan
-    return idx
+    aligned = align_around(
+        to_be_aligned=arr,
+        to_align_to=bin_edges,
+        t_before=time_before,
+        max_latency=time_after,
+    )
+    return np.where(~np.isnan(aligned), idx, np.nan)
 
 
 def split_by_bin(
@@ -143,12 +136,7 @@ def split_by_bin(
     Returns:
         OrderedDict[float, np.ndarray]: An ordered dict whose keys are the bins and whose values are arrays of vatency to these bins.
     """
-    bin_vals = which_bin(
-        arr,
-        bins,
-        nan_vals_occuring_x_after_last_bin=max_latency,
-        time_before=time_before,
-    )
+    bin_vals = which_bin(arr, bins, time_after=max_latency, time_before=time_before,)
     out = OrderedDict()
     for bin_val in np.unique(bin_vals[np.logical_not(np.isnan(bin_vals))]):
         out[bin_val] = arr[bin_vals == bin_val] - bin_val
