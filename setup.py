@@ -12,7 +12,7 @@ setup(
     description=description,
     long_discription=long_discription,
     long_discription_content_type="text/markdown",
-    version="0.0.2",
+    version="0.0.3",
     url="https://github.com/Ruairi-osul/binit",
     author="Ruairi O'Sullivan",
     author_email="ruairi.osullivan.work@gmail.com",
