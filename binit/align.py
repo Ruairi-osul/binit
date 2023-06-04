@@ -90,7 +90,7 @@ def _align_to(
         raise ValueError("Must Pass in flat numpy arrays. Try your_array.flatten()")
 
     idx = np.searchsorted(to_align_to, to_be_aligned)
-    aligned_data = (to_be_aligned - to_align_to[idx - 1]).astype(np.float)
+    aligned_data = (to_be_aligned - to_align_to[idx - 1]).astype(float)
     aligned_data[aligned_data < 0] = np.nan
 
     if no_beyond:
@@ -136,9 +136,9 @@ def _negative_align(to_be_aligned, to_align_to, no_before=False):
     # needs a dummy value to work. This appended value is not aligned to
     to_align_to = np.concatenate([to_align_to, np.array([np.max(to_align_to) + 100])])
     max_idx = len(to_align_to) - 1
-    idx = np.searchsorted(to_align_to, to_be_aligned).astype(np.int)
+    idx = np.searchsorted(to_align_to, to_be_aligned).astype(int)
     idx[idx < max_idx] += 1
-    aligned_data = (to_be_aligned - to_align_to[idx - 1]).astype(np.float)
+    aligned_data = (to_be_aligned - to_align_to[idx - 1]).astype(float)
     aligned_data[aligned_data > 0] = np.nan
     if no_before:
         aligned_data[to_be_aligned < np.min(to_align_to)] = np.nan
